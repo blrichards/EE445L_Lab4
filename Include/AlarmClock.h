@@ -24,8 +24,13 @@ typedef enum {
 	TimeChanged
 } StateChange;
 
+typedef enum {
+    Analog,
+    Digital
+} DisplayMode;
+
 /**
- * Handler for when external state such as button push or time change occurs
+ * Handler for when external state such as button push or time change occurs.
  * @param: reason: Reason for why the state changed.
  */
 void AlarmClock_DisplayShouldUpdate(StateChange change);
@@ -34,6 +39,12 @@ void AlarmClock_DisplayShouldUpdate(StateChange change);
  * Force display to redraw.
  */
 void AlarmClock_RedrawDisplay(void);
+
+/**
+ * Set display mode and navigate to that display.
+ * @param: mode: New display mode.
+ */
+void AlarmClock_SetDisplayMode(DisplayMode);
 
 extern bool AlarmEnabled;
 extern uint8_t AlarmTimeHours;

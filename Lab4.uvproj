@@ -422,11 +422,6 @@
           <GroupName>Library</GroupName>
           <Files>
             <File>
-              <FileName>Blynk.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Library\Blynk.c</FilePath>
-            </File>
-            <File>
               <FileName>esp8266.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Library\esp8266.c</FilePath>
@@ -482,6 +477,11 @@
           <GroupName>Source</GroupName>
           <Files>
             <File>
+              <FileName>Blynk.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Library\Blynk.c</FilePath>
+            </File>
+            <File>
               <FileName>AlarmClock.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Source\AlarmClock.c</FilePath>
@@ -515,6 +515,96 @@
               <FileName>Timer.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Source\Timer.c</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualPins.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Source\VirtualPins.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Include</GroupName>
+          <Files>
+            <File>
+              <FileName>AlarmClock.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Include\AlarmClock.h</FilePath>
+            </File>
+            <File>
+              <FileName>Buttons.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Include\Buttons.h</FilePath>
+            </File>
+            <File>
+              <FileName>Debug.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Include\Debug.h</FilePath>
+            </File>
+            <File>
+              <FileName>Graphics.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Include\Graphics.h</FilePath>
+            </File>
+            <File>
+              <FileName>Speaker.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Include\Speaker.h</FilePath>
+            </File>
+            <File>
+              <FileName>Timer.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Include\Timer.h</FilePath>
+            </File>
+            <File>
+              <FileName>VirtualPins.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Include\VirtualPins.h</FilePath>
+            </File>
+            <File>
+              <FileName>esp8266.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Include\esp8266.h</FilePath>
+            </File>
+            <File>
+              <FileName>PLL.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Include\PLL.h</FilePath>
+            </File>
+            <File>
+              <FileName>PortF.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Include\PortF.h</FilePath>
+            </File>
+            <File>
+              <FileName>ST7735.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Include\ST7735.h</FilePath>
+            </File>
+            <File>
+              <FileName>Timer2.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Include\Timer2.h</FilePath>
+            </File>
+            <File>
+              <FileName>Timer3.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Include\Timer3.h</FilePath>
+            </File>
+            <File>
+              <FileName>tm4c123gh6pm.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Include\tm4c123gh6pm.h</FilePath>
+            </File>
+            <File>
+              <FileName>UART.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Include\UART.h</FilePath>
+            </File>
+            <File>
+              <FileName>Blynk.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Include\Blynk.h</FilePath>
             </File>
           </Files>
         </Group>

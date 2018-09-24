@@ -34,12 +34,14 @@
 // Place a 4.7uF tantalum and 0.1 ceramic next to ESP8266 3.3V power pin
 // Use LM2937-3.3 and two 4.7 uF capacitors to convert USB +5V to 3.3V for the ESP8266
 // http://www.ti.com/lit/ds/symlink/lm2937-3.3.pdf
+#include "Blynk.h"
 #include "PLL.h"
 #include "PortF.h"
 #include "ST7735.h"
 #include "Timer2.h"
 #include "Timer3.h"
 #include "UART.h"
+#include "VirtualPins.h"
 #include "esp8266.h"
 #include "tm4c123gh6pm.h"
 #include <stdint.h>
@@ -52,15 +54,6 @@ void WaitForInterrupt(void); // Defined in startup.s
 
 uint32_t LED; // VP1
 uint32_t LastF; // VP74
-
-// These 6 variables contain the most recent Blynk to TM4C123 message
-// Blynk to TM4C123 uses VP0 to VP15
-char serial_buf[64];
-char Pin_Number[2] = "99"; // Initialize to invalid pin number
-char Pin_Integer[8] = "0000"; //
-char Pin_Float[8] = "0.0000"; //
-uint32_t pin_num;
-uint32_t pin_int;
 
 // ----------------------------------- TM4C_to_Blynk ------------------------------
 // Send data to the Blynk App
@@ -84,15 +77,16 @@ void TM4C_to_Blynk(uint32_t pin, uint32_t value)
 // data and feeds the commands to the TM4C.
 void Blynk_to_TM4C(void)
 {
+	static char serialBuffer[64];
     int j;
     char data;
     // Check to see if a there is data in the RXD buffer
-    if (ESP8266_GetMessage(serial_buf)) { // returns false if no message
+    if (ESP8266_GetMessage(serialBuffer)) { // returns false if no message
         // Read the data from the UART5
 #ifdef DEBUG1
         j = 0;
         do {
-            data = serial_buf[j];
+            data = serialBuffer[j];
             UART_OutChar(data); // Debug only
             j++;
         } while (data != '\n');
@@ -101,30 +95,15 @@ void Blynk_to_TM4C(void)
 
         // Rip the 3 fields out of the CSV data. The sequence of data from the 8266 is:
         // Pin #, Integer Value, Float Value.
-        strcpy(Pin_Number, strtok(serial_buf, ","));
-        strcpy(Pin_Integer, strtok(NULL, ",")); // Integer value that is determined by the Blynk App
-        strcpy(Pin_Float, strtok(NULL, ",")); // Not used
-        pin_num = atoi(Pin_Number); // Need to convert ASCII to integer
-        pin_int = atoi(Pin_Integer);
-        // ---------------------------- VP #1 ----------------------------------------
-        // This VP is the LED select button
-        if (pin_num == 0x01) {
-            LED = pin_int;
-            PortF_Output(LED << 2); // Blue LED
-#ifdef DEBUG3
-            Output_Color(ST7735_CYAN);
-            ST7735_OutString("Rcv VP1 data=");
-            ST7735_OutUDec(LED);
-            ST7735_OutChar('\n');
-#endif
-        } // Parse incoming data
+		uint32_t pinNumber = atoi(strtok(serialBuffer, ","));
+		uint32_t pinValue = atoi(strtok(NULL, ","));
+		FromBlynkHandlers[pinNumber](pinValue);
+
 #ifdef DEBUG1
         UART_OutString(" Pin_Number = ");
-        UART_OutString(Pin_Number);
+        UART_OutUDec(pinNumber);
         UART_OutString("   Pin_Integer = ");
-        UART_OutString(Pin_Integer);
-        UART_OutString("   Pin_Float = ");
-        UART_OutString(Pin_Float);
+        UART_OutUDec(pinValue);
         UART_OutString("\n\r");
 #endif
     }
@@ -132,19 +111,8 @@ void Blynk_to_TM4C(void)
 
 void SendInformation(void)
 {
-    uint32_t thisF;
-    thisF = PortF_Input();
-    // your account will be temporarily halted if you send too much data
-    if (thisF != LastF) {
-        TM4C_to_Blynk(74, thisF); // VP74
-#ifdef DEBUG3
-        Output_Color(ST7735_WHITE);
-        ST7735_OutString("Send 74 data=");
-        ST7735_OutUDec(thisF);
-        ST7735_OutChar('\n');
-#endif
-    }
-    LastF = thisF;
+	for (size_t i = 0; i < NUM_VIRTUAL_PINS_TO_BLYNK; ++i)
+		ToBlynkHandlers[i]();
 }
 
 int main(void)
@@ -152,6 +120,7 @@ int main(void)
     PLL_Init(Bus80MHz); // Bus clock at 80 MHz
     DisableInterrupts(); // Disable interrupts until finished with inits
     PortF_Init();
+	VirtualPins_Init();
     LastF = PortF_Input();
 #ifdef DEBUG3
     Output_Init(); // initialize ST7735

@@ -45,11 +45,6 @@ typedef enum {
 } NavigationState;
 
 typedef enum {
-    Analog,
-    Digital
-} DisplayMode;
-
-typedef enum {
     Clock,
     Alarm
 } TimeToSet;
@@ -225,6 +220,17 @@ void AlarmClock_DisplayShouldUpdate(StateChange change)
         NavigationStateActions[currentState][change]();
         break;
     }
+}
+
+void AlarmClock_SetDisplayMode(DisplayMode mode)
+{
+	DisableInterrupts();
+	currentDisplayMode = mode;
+	if (currentState == AnalogDisplay || currentState == DigitalDisplay) {
+		currentState = mode == Analog ? AnalogDisplay : DigitalDisplay;
+		updateDisplay();
+	}
+	EnableInterrupts();
 }
 
 ////////////////////////////
