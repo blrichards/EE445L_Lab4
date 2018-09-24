@@ -11,14 +11,14 @@
 #include "Buttons.h"
 #include "Debug.h"
 #include "PLL.h"
-#include "Speaker.h"
 #include "ST7735.h"
+#include "Speaker.h"
 #include "Timer.h"
 #include "tm4c123gh6pm.h"
+#include <math.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
-#include <math.h>
 
 #define PF2 (*((volatile uint32_t*)0x40025010))
 #define PF1 (*((volatile uint32_t*)0x40025008))

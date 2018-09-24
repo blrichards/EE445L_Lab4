@@ -55,10 +55,10 @@
 // Gnd (pin 1) connected to ground
 #include "ST7735.h"
 #include "tm4c123gh6pm.h"
-#include <stdint.h>
-#include <stdio.h>
 #include <math.h>
 #include <stdbool.h>
+#include <stdint.h>
+#include <stdio.h>
 
 // 16 rows (0 to 15) and 21 characters (0 to 20)
 // Requires (11 + size*size*6*8) bytes of transmission for each character
@@ -1734,7 +1734,7 @@ void static commonInit(const uint8_t* cmdList)
     SSI0_CR0_R &= ~(SSI_CR0_SCR_M | // SCR = 0 (8 Mbps data rate)
         SSI_CR0_SPH | // SPH = 0
         SSI_CR0_SPO); // SPO = 0
-        // FRF = Freescale format
+    // FRF = Freescale format
     SSI0_CR0_R = (SSI0_CR0_R & ~SSI_CR0_FRF_M) + SSI_CR0_FRF_MOTO;
     // DSS = 8-bit data
     SSI0_CR0_R = (SSI0_CR0_R & ~SSI_CR0_DSS_M) + SSI_CR0_DSS_8;
@@ -1889,42 +1889,47 @@ void ST7735_DrawFastHLine(int16_t x, int16_t y, int16_t w, uint16_t color)
     }
 }
 
-#define SWAP(type, a, b) { type temp = (b); (b) = (a); (a) = temp; } \
-	(void)0 // this is here to force a semicolon
+#define SWAP(type, a, b) \
+    {                    \
+        type temp = (b); \
+        (b) = (a);       \
+        (a) = temp;      \
+    }                    \
+    (void)0 // this is here to force a semicolon
 
 void ST7735_DrawFastDiagonalLine(float x1, float y1, float x2, float y2, uint16_t color)
-{	
-	bool steep = (fabs(y2 - y1) > fabs(x2 - x1));
-	if(steep) {
-		SWAP(float, x1, y1);
-		SWAP(float, x2, y2);
-	}
+{
+    bool steep = (fabs(y2 - y1) > fabs(x2 - x1));
+    if (steep) {
+        SWAP(float, x1, y1);
+        SWAP(float, x2, y2);
+    }
 
-	if(x1 > x2) {
-		SWAP(float, x1, x2);
-		SWAP(float, y1, y2);
-	}
+    if (x1 > x2) {
+        SWAP(float, x1, x2);
+        SWAP(float, y1, y2);
+    }
 
-	float dx = x2 - x1;
-	float dy = fabs(y2 - y1);
+    float dx = x2 - x1;
+    float dy = fabs(y2 - y1);
 
-	float error = dx / 2.0f;
-	int yStep = (y1 < y2) ? 1 : -1;
-	int y = y1;
-	int maxX = x2;
+    float error = dx / 2.0f;
+    int yStep = (y1 < y2) ? 1 : -1;
+    int y = y1;
+    int maxX = x2;
 
-	for(int x = x1; x < maxX; x++){
-		if(steep)
-			ST7735_DrawPixel(y, x, color);
-		else
-			ST7735_DrawPixel(x, y, color);
+    for (int x = x1; x < maxX; x++) {
+        if (steep)
+            ST7735_DrawPixel(y, x, color);
+        else
+            ST7735_DrawPixel(x, y, color);
 
-		error -= dy;
-		if(error < 0) {
-			y += yStep;
-			error += dx;
-		}
-	}		
+        error -= dy;
+        if (error < 0) {
+            y += yStep;
+            error += dx;
+        }
+    }
 }
 
 //************* ST7735_Line********************************************
@@ -1937,55 +1942,58 @@ void ST7735_DrawFastDiagonalLine(float x1, float y1, float x2, float y2, uint16_
 // y1,y2 are vertical positions, rows from the top edge
 //               must be less than 160
 //               159 is near the wires, 0 is the side opposite the wires
-//        color 16-bit color, which can be produced by ST7735_Color565() 
+//        color 16-bit color, which can be produced by ST7735_Color565()
 // Output: none
 void ST7735_Line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color)
 {
-	if(x1 > 128 || x2 > 128) return;	//Values to be replaced with the defined max and mins
-	if(y1 > 160 || y2 > 160) return;
+    if (x1 > 128 || x2 > 128)
+        return; //Values to be replaced with the defined max and mins
+    if (y1 > 160 || y2 > 160)
+        return;
 
-	uint16_t xDistance;
-	uint16_t yDistance;
+    uint16_t xDistance;
+    uint16_t yDistance;
 
-	xDistance = x1 <= x2 ? x2 - x1 : x1 - x2;
-	yDistance = y1 <= y2 ? y2 - y1 : y1 - y2;
+    xDistance = x1 <= x2 ? x2 - x1 : x1 - x2;
+    yDistance = y1 <= y2 ? y2 - y1 : y1 - y2;
 
-	if(xDistance == 0){
-		if (y1 <= y2)
-			ST7735_DrawFastVLine(x1, y1, yDistance, color);
-		else
-			ST7735_DrawFastVLine(x1, y2, yDistance, color);
-	} else if (yDistance == 0) {
-		if (x1 <= x2)
-			ST7735_DrawFastHLine(x1, y1, xDistance, color);
-		else
-			ST7735_DrawFastHLine(x2, y1, xDistance, color);
-	} else {
-		ST7735_DrawFastDiagonalLine(x1, y1, x2, y2, color);
-	}
+    if (xDistance == 0) {
+        if (y1 <= y2)
+            ST7735_DrawFastVLine(x1, y1, yDistance, color);
+        else
+            ST7735_DrawFastVLine(x1, y2, yDistance, color);
+    } else if (yDistance == 0) {
+        if (x1 <= x2)
+            ST7735_DrawFastHLine(x1, y1, xDistance, color);
+        else
+            ST7735_DrawFastHLine(x2, y1, xDistance, color);
+    } else {
+        ST7735_DrawFastDiagonalLine(x1, y1, x2, y2, color);
+    }
 }
 
-static void circlePoints(int cx, int cy, int x, int y, uint16_t color) {
-	if (x == 0) {
-		ST7735_DrawPixel(cx, cy + y, color);
-		ST7735_DrawPixel(cx, cy - y, color);
-		ST7735_DrawPixel(cx + y, cy, color);
-		ST7735_DrawPixel(cx - y, cy, color);
-	} else if (x == y) {
-		ST7735_DrawPixel(cx + x, cy + y, color);
-		ST7735_DrawPixel(cx - x, cy + y, color);
-		ST7735_DrawPixel(cx + x, cy - y, color);
-		ST7735_DrawPixel(cx - x, cy - y, color);
-	} else if (x < y) {
-		ST7735_DrawPixel(cx + x, cy + y, color);
-		ST7735_DrawPixel(cx - x, cy + y, color);
-		ST7735_DrawPixel(cx + x, cy - y, color);
-		ST7735_DrawPixel(cx - x, cy - y, color);
-		ST7735_DrawPixel(cx + y, cy + x, color);
-		ST7735_DrawPixel(cx - y, cy + x, color);
-		ST7735_DrawPixel(cx + y, cy - x, color);
-		ST7735_DrawPixel(cx - y, cy - x, color);
-	}
+static void circlePoints(int cx, int cy, int x, int y, uint16_t color)
+{
+    if (x == 0) {
+        ST7735_DrawPixel(cx, cy + y, color);
+        ST7735_DrawPixel(cx, cy - y, color);
+        ST7735_DrawPixel(cx + y, cy, color);
+        ST7735_DrawPixel(cx - y, cy, color);
+    } else if (x == y) {
+        ST7735_DrawPixel(cx + x, cy + y, color);
+        ST7735_DrawPixel(cx - x, cy + y, color);
+        ST7735_DrawPixel(cx + x, cy - y, color);
+        ST7735_DrawPixel(cx - x, cy - y, color);
+    } else if (x < y) {
+        ST7735_DrawPixel(cx + x, cy + y, color);
+        ST7735_DrawPixel(cx - x, cy + y, color);
+        ST7735_DrawPixel(cx + x, cy - y, color);
+        ST7735_DrawPixel(cx - x, cy - y, color);
+        ST7735_DrawPixel(cx + y, cy + x, color);
+        ST7735_DrawPixel(cx - y, cy + x, color);
+        ST7735_DrawPixel(cx + y, cy - x, color);
+        ST7735_DrawPixel(cx - y, cy - x, color);
+    }
 }
 
 //************* ST7735_Circle********************************************
@@ -1998,24 +2006,25 @@ static void circlePoints(int cx, int cy, int x, int y, uint16_t color) {
 // y is a vertical positiona, rows from the top edge
 //               must be less than 160
 //               159 is near the wires, 0 is the side opposite the wires
-//        color 16-bit color, which can be produced by ST7735_Color565() 
+//        color 16-bit color, which can be produced by ST7735_Color565()
 // Output: none
-void ST7735_Circle(uint16_t xCenter, uint16_t yCenter, uint16_t radius, uint16_t color) {
-	int x = 0;
-	int y = radius;
-	int p = (5 - radius * 4) / 4;
+void ST7735_Circle(uint16_t xCenter, uint16_t yCenter, uint16_t radius, uint16_t color)
+{
+    int x = 0;
+    int y = radius;
+    int p = (5 - radius * 4) / 4;
 
-	circlePoints(xCenter, yCenter, x, y, color);
-	while (x < y) {
-		x++;
-		if (p < 0)
-			p += 2 * x + 1;
-		else {
-			y--;
-			p += 2 * (x - y) + 1;
-		}
-		circlePoints(xCenter, yCenter, x, y, color);
-	}
+    circlePoints(xCenter, yCenter, x, y, color);
+    while (x < y) {
+        x++;
+        if (p < 0)
+            p += 2 * x + 1;
+        else {
+            y--;
+            p += 2 * (x - y) + 1;
+        }
+        circlePoints(xCenter, yCenter, x, y, color);
+    }
 }
 
 //------------ST7735_FillScreen------------

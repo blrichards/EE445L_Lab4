@@ -12,6 +12,6 @@
 
 void Graphics_ClearDisplay(void)
 {
-	ST7735_FillScreen(ST7735_BLACK);
-	ST7735_SetCursor(0, 0);
+    ST7735_FillScreen(ST7735_BLACK);
+    ST7735_SetCursor(0, 0);
 }
