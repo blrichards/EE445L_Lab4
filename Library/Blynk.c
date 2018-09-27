@@ -122,6 +122,7 @@ void SendInformation(void)
 int main(void)
 {
     PLL_Init(Bus80MHz); // Bus clock at 80 MHz
+	SYSCTL_RCGCGPIO_R |= 0x32;
     DisableInterrupts(); // Disable interrupts until finished with inits
     PortF_Init();
 	VirtualPins_Init();

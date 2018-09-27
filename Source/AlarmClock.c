@@ -25,6 +25,7 @@
 #define NUM_MINUTES 60
 #define NUM_SECONDS 60
 #define PI 3.14159265
+#define NUM_CLOCK_HOURS 12
 
 #define CONVERT_X_FOR_DRAW_STRING(x) ((uint16_t)(20.0 * ((x) / (float)ST7735_TFTWIDTH)))
 #define CONVERT_Y_FOR_DRAW_STRING(y) ((uint16_t)(15.0 * ((y) / (float)ST7735_TFTHEIGHT)))
@@ -179,9 +180,9 @@ static Point prevHoursPoint = { 0 };
 static Point prevMinutesPoint = { 0 };
 static Point prevSecondsPoint = { 0 };
 static const uint16_t clockFaceBackground = ST7735_BLACK;
-static const uint16_t hoursHandColor = ST7735_BLUE;
-static const uint16_t minutesHandColor = ST7735_BLUE;
-static const uint16_t secondsHandColor = ST7735_BLUE;
+static const uint16_t hoursHandColor = ST7735_BURNT_ORANGE;
+static const uint16_t minutesHandColor = ST7735_WHITE;
+static const uint16_t secondsHandColor = ST7735_GRAY;
 
 ////////////////////////////
 //    Global Variables    //
@@ -247,10 +248,10 @@ void drawMainMenu(void)
 
 static void drawAnalogClockFace(void)
 {
-    ST7735_Circle(clockFaceCenterX, clockFaceCenterY, clockFaceRadius, ST7735_GREEN);
+    ST7735_Circle(clockFaceCenterX, clockFaceCenterY, clockFaceRadius, ST7735_BURNT_ORANGE);
     for (size_t i = 0; i < numClockFaceNumbers; ++i) {
         Point p = clockFaceNumbersPoints[i];
-        ST7735_DrawString(p.x, p.y, clockFaceNumbers[i], ST7735_GREEN);
+        ST7735_DrawString(p.x, p.y, clockFaceNumbers[i], ST7735_BURNT_ORANGE);
     }
 }
 
@@ -277,63 +278,89 @@ void drawAnalogDisplay(void)
     drawAnalogClockFace();
     drawAnalogClockHand(CurrentSeconds, NUM_SECONDS, secondsHandLength, secondsHandColor, &prevSecondsPoint);
     drawAnalogClockHand(CurrentMinutes, NUM_MINUTES, minutesHandLength, minutesHandColor, &prevMinutesPoint);
-    drawAnalogClockHand(CurrentHours, NUM_HOURS, hoursHandLength, hoursHandColor, &prevHoursPoint);
+	drawAnalogClockHand(CurrentHours, NUM_CLOCK_HOURS, hoursHandLength, hoursHandColor, &prevHoursPoint);
+	
+	(CurrentHours < 12) ? ST7735_DrawString(19,15,"AM",ST7735_BURNT_ORANGE) : ST7735_DrawString(19,15,"PM",ST7735_BURNT_ORANGE);
 }
 
 void drawDigitalDisplay(void)
 {
-    Graphics_ClearDisplay();
-    ST7735_OutString("Current Time:\n");
-
-    if (CurrentHours >= 13) {
-        if (CurrentHours <= 21)
-            ST7735_OutString("0");
-        ST7735_OutUDec(CurrentHours - 12);
-    } else {
-        if (CurrentHours <= 9)
-            ST7735_OutString("0");
-        ST7735_OutUDec(CurrentHours);
-    }
-
-    ST7735_OutString(":");
-
-    if (CurrentMinutes <= 9)
-        ST7735_OutString("0");
-    ST7735_OutUDec(CurrentMinutes);
-    ST7735_OutString(":");
-    if (CurrentSeconds <= 9)
-        ST7735_OutString("0");
-    ST7735_OutUDec(CurrentSeconds);
+	if (shouldClearScreen) {
+		Graphics_ClearDisplay();
+		ST7735_OutString("Current Time:\n");
+		shouldClearScreen = false;
+	} else ST7735_FillRect(0, 8, 40, 8, ST7735_BLACK);
+	
+	ST7735_SetCursor(0, 1);
+	if(CurrentHours >= 13){
+		if(CurrentHours <= 21) ST7735_OutString("0");
+		ST7735_OutUDec(CurrentHours - 12);
+	}
+	else{
+		if(CurrentHours <= 9 && CurrentHours != 0){
+			ST7735_OutString("0");
+			ST7735_OutUDec(CurrentHours);
+		}
+		else if (CurrentHours == 0) ST7735_OutString("12");
+		else ST7735_OutUDec(CurrentHours);
+	}
+	
+	ST7735_OutString(":");
+	
+	if(CurrentMinutes <= 9) ST7735_OutString("0");
+	ST7735_OutUDec(CurrentMinutes);
+	ST7735_OutString(":");
+	if(CurrentSeconds <= 9) ST7735_OutString("0");
+	ST7735_OutUDec(CurrentSeconds);
+	
+	if (CurrentHours < 12)
+		ST7735_OutString(" AM");
+	else
+		ST7735_OutString(" PM");
 }
 
 void drawSetDisplayMode(void)
 {
-    Graphics_ClearDisplay();
-    ST7735_OutString("1. Set Analog\n");
-    ST7735_OutString("2. Set Digital\n");
-    ST7735_OutString("3. Goto Main Menu\n");
+    if (shouldClearScreen) {
+		Graphics_ClearDisplay();
+		shouldClearScreen = false;
+	}
+	ST7735_OutString("1. Set Analog\n");
+	ST7735_OutString("2. Set Digital\n");
+	ST7735_OutString("3. Goto Main Menu\n");
 }
 
 void drawSetTime(void)
 {
-    Graphics_ClearDisplay();
-    char buf[256];
-    sprintf(buf, "1) Add Hour\n    current: %d\n", setTimeHours);
-    ST7735_OutString(buf);
-    sprintf(buf, "2) Add Minute\n    current: %d\n", setTimeMinutes);
-    ST7735_OutString(buf);
-    ST7735_OutString("3) Confirm\n");
-    ST7735_OutString("4) Cancel\n");
+    if (shouldClearScreen) {
+		Graphics_ClearDisplay();
+		ST7735_SetCursor(0, 4);
+		ST7735_OutString("3) Confirm\n");
+		ST7735_OutString("4) Cancel\n");
+		shouldClearScreen = false;
+	} else ST7735_FillRect(0, 0, 90, 3, ST7735_BLACK);
+	
+	ST7735_SetCursor(0, 0);
+	char buf[256];
+	sprintf(buf, "1) Add Hour\n    current: %d\n", setTimeHours);
+	ST7735_OutString(buf);
+	sprintf(buf, "2) Add Minute\n    current: %d", setTimeMinutes);
+	ST7735_OutString(buf);
 }
 
 void drawAlarmSettings(void)
 {
-    Graphics_ClearDisplay();
-    ST7735_OutString("1) Set Alarm\n");
-    char buf[256];
-    sprintf(buf, "2) %s Alarm\n", AlarmEnabled ? "Turn Off" : "Turn On");
-    ST7735_OutString(buf);
-    ST7735_OutString("3) Return\n");
+    if (shouldClearScreen) {
+		Graphics_ClearDisplay();
+		shouldClearScreen = false;
+	} else ST7735_FillRect(0, 0, 60, 80, ST7735_BLACK);
+	
+	ST7735_SetCursor(0, 0);
+	ST7735_OutString("1) Set Alarm\n");
+	char buf[256];
+	sprintf(buf, "2) %s Alarm\n", AlarmEnabled ? "Turn Off" : "Turn On");
+	ST7735_OutString(buf);
+	ST7735_OutString("3) Return\n");
 }
 
 void drawAlarmOn(void)

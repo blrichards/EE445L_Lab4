@@ -77,6 +77,8 @@ enum initRFlags {
 #define ST7735_MAGENTA 0xF81F
 #define ST7735_YELLOW 0x07FF
 #define ST7735_WHITE 0xFFFF
+#define ST7735_BURNT_ORANGE 0x139B
+#define ST7735_GRAY 0xBCEE
 
 extern uint32_t StX; // position along the horizonal axis 0 to 20
 extern uint32_t StY; // position along the vertical axis 0 to 15
