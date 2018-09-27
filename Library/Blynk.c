@@ -35,9 +35,13 @@
 // Use LM2937-3.3 and two 4.7 uF capacitors to convert USB +5V to 3.3V for the ESP8266
 // http://www.ti.com/lit/ds/symlink/lm2937-3.3.pdf
 #include "Blynk.h"
+#include "AlarmClock.h"
+#include "Buttons.h"
 #include "PLL.h"
 #include "PortF.h"
+#include "Speaker.h"
 #include "ST7735.h"
+#include "Timer.h"
 #include "Timer2.h"
 #include "Timer3.h"
 #include "UART.h"
@@ -122,8 +126,14 @@ int main(void)
     PortF_Init();
 	VirtualPins_Init();
     LastF = PortF_Input();
+	
+	// Alarm Clock Setup
+    Output_Init();
+	ST7735_OutString("Starting up. Please wait.\n");
+	Buttons_Init();
+	Timer0A_Init(79999999);
+	Speaker_Init();
 #ifdef DEBUG3
-    Output_Init(); // initialize ST7735
     ST7735_OutString("EE445L Lab 4D\nBlynk example\n");
 #endif
 #ifdef DEBUG1
@@ -140,6 +150,8 @@ int main(void)
     Timer3_Init(&SendInformation, 40000000);
     // Send data back to Blynk App every 1/2 second
     EnableInterrupts();
+	
+	AlarmClock_RedrawDisplay();
 
     while (1) {
         WaitForInterrupt(); // low power mode

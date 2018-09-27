@@ -6,6 +6,8 @@
 
 #define ANALOG_CLOCK_MODE 0
 #define DIGITAL_CLOCK_MODE 1
+#define BUTTON_PRESSED 1
+#define BUTTON_RELEASED 0
 
 FromBlynkHandler FromBlynkHandlers[NUM_VIRTUAL_PINS_FROM_BLYNK];
 ToBlynkHandler ToBlynkHandlers[NUM_VIRTUAL_PINS_TO_BLYNK];
@@ -21,24 +23,28 @@ static void setDisplayMode(int32_t mode)
 		AlarmClock_SetDisplayMode(Digital);
 }
 
-static void buttonZeroPressed(int32_t unused)
+static void buttonZeroPressed(int32_t pressedReleased)
 {
-	AlarmClock_DisplayShouldUpdate(ButtonZeroPressed);
+	if (pressedReleased == BUTTON_PRESSED)
+		AlarmClock_DisplayShouldUpdate(ButtonZeroPressed);
 }
 
-static void buttonOnePressed(int32_t unused)
+static void buttonOnePressed(int32_t pressedReleased)
 {
-	AlarmClock_DisplayShouldUpdate(ButtonOnePressed);
+	if (pressedReleased == BUTTON_PRESSED)
+		AlarmClock_DisplayShouldUpdate(ButtonOnePressed);
 }
 
-static void buttonTwoPressed(int32_t unused)
+static void buttonTwoPressed(int32_t pressedReleased)
 {
-	AlarmClock_DisplayShouldUpdate(ButtonTwoPressed);
+	if (pressedReleased == BUTTON_PRESSED)
+		AlarmClock_DisplayShouldUpdate(ButtonTwoPressed);
 }
 
-static void buttonThreePressed(int32_t unused)
+static void buttonThreePressed(int32_t pressedReleased)
 {
-	AlarmClock_DisplayShouldUpdate(ButtonThreePressed);
+	if (pressedReleased == BUTTON_PRESSED)
+		AlarmClock_DisplayShouldUpdate(ButtonThreePressed);
 }
 
 ////////////////////////////

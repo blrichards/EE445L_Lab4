@@ -30,6 +30,8 @@
 // the following two lines connect you to the internet
 char ssid[32] = "EE-IOT-Platform-03";
 char pass[32] = "dUQQE?&W44x7";
+//char ssid[32] = "Ben's iPhone";
+//char pass[32] = "Benton97";
 // create your own Blynk server app and edit this next line with your authentication code
 char auth[64] = "dd641cc448504030af2433d7df225277";
 

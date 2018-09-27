@@ -15,8 +15,8 @@
 #define _ESP8266H_
 #include <stdint.h>
 // comment out either/both to remove debugging
-#define DEBUG1                // UART0 Debug output
-#define DEBUG3                // ST7735 Debug output
+//#define DEBUG1                // UART0 Debug output
+//#define DEBUG3                // ST7735 Debug output
 
 // Initialize PE5,4,3,1,0 for interface to ESP8266
 // Uses interrupt driven UART5 on PE5,4
