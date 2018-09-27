@@ -130,7 +130,6 @@ int main(void)
 	
 	// Alarm Clock Setup
     Output_Init();
-	ST7735_OutString("Starting up. Please wait.\n");
 	Buttons_Init();
 	Timer0A_Init(79999999);
 	Speaker_Init();
@@ -142,17 +141,13 @@ int main(void)
     UART_OutString("\n\rEE445L Lab 4D\n\rBlynk example");
 #endif
     ESP8266_Init(); // Enable ESP8266 Serial Port
-    ESP8266_Reset(); // Reset the WiFi module
+	ESP8266_Reset(); // Reset the WiFi module
     ESP8266_SetupWiFi(); // Setup communications to Blynk Server
-
-    Timer2_Init(&Blynk_to_TM4C, 800000);
+	Timer2_Init(&Blynk_to_TM4C, 800000);
     // check for receive data from Blynk App every 10ms
-
-    Timer3_Init(&SendInformation, 40000000);
+	Timer3_Init(&SendInformation, 40000000);
     // Send data back to Blynk App every 1/2 second
-    EnableInterrupts();
-	
-	AlarmClock_RedrawDisplay();
+	EnableInterrupts();
 
     while (1) {
         WaitForInterrupt(); // low power mode

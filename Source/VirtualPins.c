@@ -2,6 +2,7 @@
 
 #include "AlarmClock.h"
 #include "Blynk.h"
+#include "UART.h"
 #include "VirtualPins.h"
 
 #define ANALOG_CLOCK_MODE 0
@@ -17,9 +18,10 @@ ToBlynkHandler ToBlynkHandlers[NUM_VIRTUAL_PINS_TO_BLYNK];
 ////////////////////////////
 static void setDisplayMode(int32_t mode) 
 {
-	if (mode == ANALOG_CLOCK_MODE)
+	if (mode == ANALOG_CLOCK_MODE) {
+		UART_OutString("Set analog");
 		AlarmClock_SetDisplayMode(Analog);
-	else if (mode == DIGITAL_CLOCK_MODE)
+	} else if (mode == DIGITAL_CLOCK_MODE)
 		AlarmClock_SetDisplayMode(Digital);
 }
 

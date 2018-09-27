@@ -229,7 +229,7 @@ void AlarmClock_SetDisplayMode(DisplayMode mode)
 	currentDisplayMode = mode;
 	if (currentState == AnalogDisplay || currentState == DigitalDisplay) {
 		currentState = mode == Analog ? AnalogDisplay : DigitalDisplay;
-		updateDisplay();
+		AlarmClock_RedrawDisplay();
 	}
 	EnableInterrupts();
 }
@@ -295,8 +295,7 @@ void drawDigitalDisplay(void)
 	if(CurrentHours >= 13){
 		if(CurrentHours <= 21) ST7735_OutString("0");
 		ST7735_OutUDec(CurrentHours - 12);
-	}
-	else{
+	} else{
 		if(CurrentHours <= 9 && CurrentHours != 0){
 			ST7735_OutString("0");
 			ST7735_OutUDec(CurrentHours);
@@ -307,10 +306,12 @@ void drawDigitalDisplay(void)
 	
 	ST7735_OutString(":");
 	
-	if(CurrentMinutes <= 9) ST7735_OutString("0");
+	if(CurrentMinutes <= 9) 
+		ST7735_OutString("0");
 	ST7735_OutUDec(CurrentMinutes);
 	ST7735_OutString(":");
-	if(CurrentSeconds <= 9) ST7735_OutString("0");
+	if(CurrentSeconds <= 9) 
+		ST7735_OutString("0");
 	ST7735_OutUDec(CurrentSeconds);
 	
 	if (CurrentHours < 12)
