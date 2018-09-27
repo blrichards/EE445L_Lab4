@@ -43,6 +43,21 @@ void GPIOPortB_Handler(void)
     uint8_t flags = (GPIO_PORTB_MIS_R & 0x0F);
     GPIO_PORTB_ICR_R = 0x0F; // acknowledge flag
 
+	switch(flags){
+		case FAR_LEFT_SWITCH:
+			AlarmClock_DisplayShouldUpdate(ButtonZeroPressed);
+			break;
+		case SECOND_TO_LEFT_SWITCH:
+			AlarmClock_DisplayShouldUpdate(ButtonOnePressed);
+			break;
+		case SECOND_TO_RIGHT_SWITCH:
+			AlarmClock_DisplayShouldUpdate(ButtonTwoPressed);
+			break;
+		case FAR_RIGHT_SWITCH:	
+			AlarmClock_DisplayShouldUpdate(ButtonThreePressed);
+			break;
+		default:	//multiple buttons pressed, dont do anything
+			break;
+	}
     PF2 ^= 0x04;
-    //TODO: to process data input to the clock
 }

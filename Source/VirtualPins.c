@@ -31,7 +31,7 @@ static void sendCurrentSeconds(void) {
 
 static void fromBlynkInit(void)
 {
-	FromBlynkHandlers[VP_DISPLAY_MODE_SELECTOR] = setDisplayMode;
+	FromBlynkHandlers[VP_FAR_LEFT_SWITCH] = AlarmClock_DisplayShouldUpdate;	//TODO - not sure if this is right
 }
 
 static void toBlynkInit(void)
