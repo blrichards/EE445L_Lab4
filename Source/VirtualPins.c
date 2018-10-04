@@ -10,8 +10,8 @@
 #define BUTTON_PRESSED 1
 #define BUTTON_RELEASED 0
 
-FromBlynkHandler FromBlynkHandlers[NUM_VIRTUAL_PINS_FROM_BLYNK];
-ToBlynkHandler ToBlynkHandlers[NUM_VIRTUAL_PINS_TO_BLYNK];
+FromBlynkHandler FromBlynkHandlers[NUM_VIRTUAL_PINS_FROM_BLYNK] = {0};
+ToBlynkHandler ToBlynkHandlers[NUM_VIRTUAL_PINS_TO_BLYNK] = {0};
 
 ////////////////////////////
 //  From Blynk Handlers   //
@@ -69,7 +69,7 @@ static void sendCurrentSeconds(void)
 
 static void fromBlynkInit(void)
 {
-	FromBlynkHandlers[VP_DISPLAY_MODE_SELECTOR] = setDisplayMode;
+	// FromBlynkHandlers[VP_DISPLAY_MODE_SELECTOR] = setDisplayMode;
 	FromBlynkHandlers[VP_FAR_LEFT_SWITCH] = buttonZeroPressed;
 	FromBlynkHandlers[VP_SECOND_TO_LEFT_SWITCH] = buttonOnePressed;
 	FromBlynkHandlers[VP_SECOND_TO_RIGHT_SWITCH] = buttonTwoPressed;

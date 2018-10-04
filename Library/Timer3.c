@@ -42,7 +42,7 @@ void Timer3_Init(void (*task)(void), uint32_t period)
     TIMER3_TAPR_R = 0; // 5) bus clock resolution
     TIMER3_ICR_R = 0x00000001; // 6) clear TIMER3A timeout flag
     TIMER3_IMR_R = 0x00000001; // 7) arm timeout interrupt
-    NVIC_PRI8_R = (NVIC_PRI8_R & 0x00FFFFFF) | 0x80000000; // 8) priority 4
+    NVIC_PRI8_R = (NVIC_PRI8_R & 0x00FFFFFF) | 0x40000000; // 8) priority 4
     // interrupts enabled in the main program after all devices initialized
     // vector number 51, interrupt number 35
     NVIC_EN1_R = 1 << (35 - 32); // 9) enable IRQ 35 in NVIC

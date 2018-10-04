@@ -33,7 +33,7 @@ char pass[32] = "dUQQE?&W44x7";
 //char ssid[32] = "Ben's iPhone";
 //char pass[32] = "Benton97";
 // create your own Blynk server app and edit this next line with your authentication code
-char auth[64] = "dd641cc448504030af2433d7df225277";
+char    auth[64]        = "09b79acf15374b589054a3d09c6cb994";
 
 #define UART_FR_RXFF 0x00000040 // UART Receive FIFO Full
 #define UART_FR_TXFF 0x00000020 // UART Transmit FIFO Full
@@ -379,7 +379,7 @@ void ESP8266_Reset(void)
     UART_OutString("Reset pin being held low for 5 sec\r\n");
 #endif
     RST = LOW; // Reset the 8266
-    DelayMs(5000); // Wait for 8266 to reset
+    DelayMs(8000); // Wait for 8266 to reset
     RST = RST1; // Enable the 8266
 #ifdef DEBUG1
     UART_OutString("Reset pin is now high for 5 sec\r\n");

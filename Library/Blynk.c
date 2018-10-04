@@ -101,7 +101,8 @@ void Blynk_to_TM4C(void)
         // Pin #, Integer Value, Float Value.
 		uint32_t pinNumber = atoi(strtok(serialBuffer, ","));
 		uint32_t pinValue = atoi(strtok(NULL, ","));
-		FromBlynkHandlers[pinNumber](pinValue);
+		if (FromBlynkHandlers[pinNumber])
+			FromBlynkHandlers[pinNumber](pinValue);
 
 #ifdef DEBUG1
         UART_OutString(" Pin_Number = ");
@@ -115,38 +116,46 @@ void Blynk_to_TM4C(void)
 
 void SendInformation(void)
 {
-	for (size_t i = 0; i < NUM_VIRTUAL_PINS_TO_BLYNK; ++i)
-		ToBlynkHandlers[i]();
+	for (size_t i = 0; i < NUM_VIRTUAL_PINS_TO_BLYNK; ++i) {}
+		// ToBlynkHandlers[i]();
 }
 
 int main(void)
 {
-    PLL_Init(Bus80MHz); // Bus clock at 80 MHz
-	SYSCTL_RCGCGPIO_R |= 0x32;
-    DisableInterrupts(); // Disable interrupts until finished with inits
-    PortF_Init();
+	PLL_Init(Bus80MHz);   // Bus clock at 80 MHz
+	DisableInterrupts();  // Disable interrupts until finished with inits
+  PortF_Init();
+  LastF = PortF_Input();
+	Output_Init();
+	AlarmClock_RedrawDisplay();
 	VirtualPins_Init();
-    LastF = PortF_Input();
-	
-	// Alarm Clock Setup
-    Output_Init();
-	Buttons_Init();
-	Timer0A_Init(79999999);
-	Speaker_Init();
 #ifdef DEBUG3
-    ST7735_OutString("EE445L Lab 4D\nBlynk example\n");
+  Output_Init();        // initialize ST7735
+  ST7735_OutString("EE445L Lab 4D\nBlynk example\n");
 #endif
 #ifdef DEBUG1
-    UART_Init(5); // Enable Debug Serial Port
-    UART_OutString("\n\rEE445L Lab 4D\n\rBlynk example");
+  UART_Init(5);         // Enable Debug Serial Port
+  UART_OutString("\n\rEE445L Lab 4D\n\rBlynk example");
 #endif
-    ESP8266_Init(); // Enable ESP8266 Serial Port
-	ESP8266_Reset(); // Reset the WiFi module
-    ESP8266_SetupWiFi(); // Setup communications to Blynk Server
-	Timer2_Init(&Blynk_to_TM4C, 800000);
-    // check for receive data from Blynk App every 10ms
-	Timer3_Init(&SendInformation, 40000000);
-    // Send data back to Blynk App every 1/2 second
+	// Alarm Clock Setup
+	Buttons_Init();
+	
+	Speaker_Init();
+	
+  ESP8266_Init();       // Enable ESP8266 Serial Port
+  ESP8266_Reset();      // Reset the WiFi module
+  ESP8266_SetupWiFi();  // Setup communications to Blynk Server  
+  
+  Timer2_Init(&Blynk_to_TM4C,800000); 
+  // check for receive data from Blynk App every 10ms
+
+  Timer3_Init(&SendInformation,40000000); 
+  // Send data back to Blynk App every 1/2 second
+  
+  Timer0A_Init(79999999);
+  
+  EnableInterrupts();
+	
 	EnableInterrupts();
 
     while (1) {
